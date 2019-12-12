@@ -1,3 +1,4 @@
+import requests, json
 from flask import Flask, render_template, request
 app = Flask(__name__)
 
@@ -7,16 +8,23 @@ def home():
 
 @app.route('/study_image', methods = ['POST'])
 def study_image():
-    
-    image_url = request.form['url-input']
-    # At this point you have the image_url value from the front end
-    # Your job now is to send this information to the Clarifai API
-    # and read the result, make sure that you read and understand the
-    # example we covered in the slides! 
+ 	image_url = request.form['url-input']
+	headers = {'Authorization': 'Key 1054d6f8bd544e648c9f291b49e30885'}
+	api_url = "https://api.clarifai.com/v2/models/aaa03c23b3724a16a56b629203edc62c/outputs"
+	data ={"inputs": [
+			{
+				"data": {
+				"image": {
+				"url": image_url
+				}
+			}
+		}
+		]}
 
-    # YOUR CODE HERE!
-    
-    return render_template('home.html', results="No results yet :(")
+	# putting everything together; sending the request!
+	response = requests.post(api_url, headers=headers, data=json.dumps(data))
+	parsed= json.loads(response.content)
+	return render_template('home.html', results=parsed["outputs"][0]["data"]["concepts"])
 
 if __name__ == '__main__':
     app.run(debug=True)

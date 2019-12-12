@@ -7,6 +7,8 @@
             <input type="submit">
         </form>
 
-        {{results}}
+        {% for item in results%}
+        	{{item["name"]}}
+        {% endfor%}
     </body>
 </html>
